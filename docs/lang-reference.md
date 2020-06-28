@@ -41,57 +41,57 @@ Supported languages are listed below:
 
 ### Canvas & Drawing
 
-<detail><summary>`paper`</summary>
+<details><summary>`paper`</summary>
 Aliases: <span>?<sup>spanish</sup></span><br />
 Parameters:
-<detail><summary>`paper` *gray-scale*</summary>
+<details><summary>`paper` *gray-scale*</summary>
 Set the background's color.
-</detail>
+</details>
 
-<detail><summary>`paper` *red* *green* *blue*</summary>
+<details><summary>`paper` *red* *green* *blue*</summary>
 Set the background's color.
-</detail>
-</detail>
+</details>
+</details>
 
-<detail><summary>`pen`</summary>
+<details><summary>`pen`</summary>
 
-</detail>
+</details>
 
-<detail><summary>`point`</summary>
+<details><summary>`point`</summary>
 
-</detail>
+</details>
 
-<detail><summary>`line`</summary>
+<details><summary>`line`</summary>
 
-</detail>
+</details>
 
 ### Conditions
 
-<detail><summary>`same?`</summary>
+<details><summary>`same?`</summary>
 
-</detail>
+</details>
 
-<detail><summary>`notsame?`</summary>
+<details><summary>`notsame?`</summary>
 
-</detail>
+</details>
 
-<detail><summary>`smaller?`</summary>
+<details><summary>`smaller?`</summary>
 
-</detail>
+</details>
 
-<detail><summary>`notsmaller?`</summary>
+<details><summary>`notsmaller?`</summary>
 
-</detail>
+</details>
 
 ### Repetition
 
-<detail><summary>`repeat`</summary>
+<details><summary>`repeat`</summary>
 
-</detail>
+</details>
 
-<detail><summary>`forever`</summary>
+<details><summary>`forever`</summary>
 
-</detail>
+</details>
 
 
 
@@ -109,27 +109,27 @@ Set the background's color.
 
 ### Turtle graphics
 
-<detail><summary>`turtle` x-origin y-origin facing</summary>
+<details><summary>`turtle` x-origin y-origin facing</summary>
 
-</detail>
+</details>
 
 ### Conditions
 
-<detail><summary>`bigger?`</summary>
+<details><summary>`bigger?`</summary>
 
-</detail>
+</details>
 
-<detail><summary>`notbigger?`</summary>
+<details><summary>`notbigger?`</summary>
 
-</detail>
+</details>
 
 ### Control flow
 
-<detail><summary>`if`</summary>
+<details><summary>`if`</summary>
 
-</detail>
+</details>
 
-<detail><summary>`while`</summary>
+<details><summary>`while`</summary>
 
-</detail>
+</details>
 
