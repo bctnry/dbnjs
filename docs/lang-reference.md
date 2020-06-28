@@ -41,15 +41,20 @@ Supported languages are listed below:
 
 ### Canvas & Drawing
 
-<details><summary>`paper`</summary>
-Aliases: <span>?<sup>spanish</sup></span><br />
-Parameters:
-<details><summary>`paper` *gray-scale*</summary>
-Set the background's color.
+<details><summary><code>paper</code> - Set the color of background.</summary>
+Aliases: <code>papel</code><sup>spanish</sup> <code>papier</code><sup>french</sup> <code>かみ</code><sup>japanese</sup> <code>纸</code><sup>chinese-simp</sup> 
+<details><summary><code>paper</code> <i>gray-scale</i></summary>
+Set the color of background.
+
+*gray-scale* is an integer between 0 to 100, with 0 representing **white** and 100 representing **black**.
 </details>
 
-<details><summary>`paper` *red* *green* *blue*</summary>
-Set the background's color.
+<details><summary><code>paper</code> <i>red</i> <i>green</i> <i>blue</i></summary>
+Set the color of background.
+
+*red*, *green*, *blue* are integers between 0 to 100, with 0 representing **0%** and 100 representing **100%**.
+
+e.g. `paper 100` is equivalent to `paper 0 0 0`, and `paper 0` is equivalent to `paper 100 100 100`.
 </details>
 </details>
 
