@@ -3,13 +3,17 @@
 ## Syntax
 
 ```
+Program ::= Command*
 Command ::= SimpleCommand ("{" Command* "}")?
 SimpleCommand ::= Element+
-Element ::= AtomicElement | ArrayElement | PositionElement | Expr
+Element ::= ArrayElement | PositionElement | Expr
 AtomicElement ::= INTEGER
-ArrayElement ::= "<" IDENTIFIER ">"
-PositionElement ::= "[" INTEGER INTEGER "]"
-Expr ::=
+ArrayElement ::= "<" IDENTIFIER Expr ">"
+PositionElement ::= "[" Expr Expr IDENTIFIER? "]"
+Expr ::= AtomicExpr | "(" ComplexExpr ")"
+ComplexExpr ::= Factor | ComplexExpr ("+" | "-") Factor
+Factor ::= AtomicExpr | Factor ("*" | "/" | "%") AtomicExpr
+AtomicExpr ::= INTEGER | IDENTIFIER | ArrayElement | PositionElement | "(" Expr ")"
 ```
 
 ## Keywords in other languages
@@ -38,7 +42,15 @@ Supported languages are listed below:
 ### Canvas & Drawing
 
 <detail><summary>`paper`</summary>
+Aliases: <span>?<sup>spanish</sup></span><br />
+Parameters:
+<detail><summary>`paper` *gray-scale*</summary>
+Set the background's color.
+</detail>
 
+<detail><summary>`paper` *red* *green* *blue*</summary>
+Set the background's color.
+</detail>
 </detail>
 
 <detail><summary>`pen`</summary>
