@@ -58,7 +58,10 @@ e.g. `paper 100` is equivalent to `paper 0 0 0`, and `paper 0` is equivalent to 
 </details>
 </details>
 
-<details><summary>`pen`</summary>
+<details><summary><code>pen</code> - Set the color of foreground.</summary>
+Aliases: <code>stilo</code><sup>spanish</sup> <code>plume</code><sup>french</sup> <code>ペン</code><sup>japanese</sup> <code>笔</code><sup>chinese-simp</sup> 
+
+Set the color of foreground.
 
 </details>
 
