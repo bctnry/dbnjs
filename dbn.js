@@ -185,6 +185,35 @@ var DBN = (function(){
     var CommandBody = withTag(TAG.COMMAND_BODY);
     var isCommandBody = checkTag(TAG.COMMAND_BODY);
 
+    var parseExpr = function (tl) {
+
+    };
+    var parseAtomicExpr = function (tl, i) {
+        var i = 0;
+        switch (getTokenType(tl[i])) {
+            case TOKEN.INTEGER: { return [i+1, Integer(parseInt(getTokenStr(tl[i]), 10))]; }
+            case TOKEN.IDENTIFIER: { return [i+1, Identifier(getTokenStr(tl[i]))]; }
+            case TOKEN.LANGLE: { return parseArrayElementRest(tl, i+1); }
+            case TOKEN.LSQB: { return parsePositionElementRest(tl, i+1); }
+            case TOKEN.LPAREN: { return parseExprRest(tl, i+1); }
+            default: {
+                throw new Error();
+            }
+        }
+    };
+    var parseArrayElementRest = function (tl, i) {
+        var i = 0;
+    };
+    var parsePositionElementRest = function (tl, i) {
+        var i = 0;
+    }
+    var parsePositionElementRest = function (tl, i) {
+        var i = 0;
+    }
+    var parseExprRest = function (tl, i) {
+        var i = 0;
+    }
+
     var parse = function (s) {
 
     }

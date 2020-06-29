@@ -7,7 +7,6 @@ Program ::= Command*
 Command ::= SimpleCommand ("{" Command* "}")?
 SimpleCommand ::= Element+
 Element ::= ArrayElement | PositionElement | Expr
-AtomicElement ::= INTEGER
 ArrayElement ::= "<" IDENTIFIER Expr ">"
 PositionElement ::= "[" Expr Expr IDENTIFIER? "]"
 Expr ::= AtomicExpr | "(" ComplexExpr ")"
