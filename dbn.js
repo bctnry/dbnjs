@@ -67,6 +67,10 @@ var DBN = (function(){
         var res = [];
         var i = 0;
         var line = 1, col = 1;
+        var skipResult = lex_skipWhite(s, i, line, col);
+        i = skipResult[0];
+        line = skipResult[1];
+        col = skipResult[2];
         while (s[i]) {
             switch (s[i]) {
                 case '<': { res.push(Token(TOKEN.LANGLE, s.substring(i, i+1), line, col)); i++; col++; break; }
@@ -83,7 +87,7 @@ var DBN = (function(){
                 case '/': {
                     if (s[i+1] && s[i+1] === '/') {
                         var j = i+1;
-                        while (s[j] && x[j] !== '\n') { j++; }
+                        while (s[j] && s[j] !== '\n') { j++; }
                         res.push(Token(TOKEN.COMMENT, s.substring(i, j), line, col));
                         col += j - i;
                         i = j;
@@ -195,6 +199,7 @@ var DBN = (function(){
     // canvas discovering.
     
     return {
+        lex: lex,
         run: function () {
 
         }
