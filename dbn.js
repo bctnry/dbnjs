@@ -252,7 +252,7 @@
                 return [i, withPosFromToken(tl[startI])(restRes[1])];
             }
             default: {
-                throw new Error('INTEGER/IDENTIFIER/LANGLE/LSQB/LPAREN expected but other stuff found.');
+                return undefined;
             }
         }
     };
@@ -351,20 +351,34 @@
             if (!tl[i]) { break; }
             if (getTokenType(tl[i]) === TOKEN.NL) { break; }
         }
-        console.log(res);
         return [i, withPosFromAST(res[0])(Command.apply(undefined, res))];
     }
     function parseCommand (tl, i) {
+        i = parse_skipAllWhite(tl, i);
         var simpleCommand = parseSimpleCommand(tl, i);
         if (!simpleCommand) { throw new Error('SimpleCommand expected but nothing or other stuff found'); }
         i = simpleCommand[0]
         var head = simpleCommand[1];
         if (!tl[i]) { return [i, head]; }
         if (getTokenType(tl[i]) !== TOKEN.LBRACE) { return [i, head]; }
-
-        
+        var lbrace = tl[i];
+        i++;
+        i = parse_skipAllWhite(tl, i);
+        var bodyList = [];
+        while (tl[i]) {
+            var c = parseCommand(tl, i);
+            if (!c) { break; }
+            bodyList.push(c[1]);
+            i = c[0];
+            i = parse_skipAllWhite(tl, i);
+            if (!tl[i]) { throw new Error('RBRACE expected but nothing is found'); }
+            if (getTokenType(tl[i]) === TOKEN.RBRACE) { i++; break; }
+        }
+        head.push(withPosFromToken(lbrace)(CommandBody.apply(undefined, bodyList)));
+        return [i, head];
     }
     function parseProgram (tl) {
+        i = parse_skipAllWhite(tl, i);
         var res = [];
         var i = 0;
         if (!tl[i]) { throw new Error('Command expected but nothing found'); }
@@ -373,7 +387,8 @@
             if (!r) { break; }
             res.push(r[1]);
             i = r[0];
-            i = parse_skipWhite(tl, i);
+            i = parse_skipAllWhite(tl, i);
+            if (!tl[i]) { break; }
         }
         return res;
     }
