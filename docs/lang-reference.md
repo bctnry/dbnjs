@@ -5,14 +5,12 @@
 ```
 Program ::= Command*
 Command ::= SimpleCommand ("{" Command* "}")?
-SimpleCommand ::= Element+
-Element ::= ArrayElement | PositionElement | Expr
+SimpleCommand ::= Expr+
 ArrayElement ::= "<" IDENTIFIER Expr ">"
 PositionElement ::= "[" Expr Expr IDENTIFIER? "]"
-Expr ::= AtomicExpr | "(" ComplexExpr ")"
+Expr ::= INTEGER | IDENTIFIER | ArrayElement | PositionElement | "(" ComplexExpr ")"
 ComplexExpr ::= Factor | ComplexExpr ("+" | "-") Factor
-Factor ::= AtomicExpr | Factor ("*" | "/" | "%") AtomicExpr
-AtomicExpr ::= INTEGER | IDENTIFIER | ArrayElement | PositionElement | "(" Expr ")"
+Factor ::= Expr | Factor ("*" | "/" | "%") Expr
 ```
 
 ## Keywords in other languages
