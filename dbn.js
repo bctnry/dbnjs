@@ -1,18 +1,18 @@
-var DBN = (function(){
+// var DBN = (function(){
     // util funcs.
-    var withTag = function (tag) { return function (...args) { args._tag = tag; return args; }; };
-    var checkTag = function (tag) { return function (x) { return x._tag === tag; }; };
-    var nth = function (n) { return function (x) { return x[n]; }; }
+    function withTag (tag) { return function (...args) { args._tag = tag; return args; }; };
+    function checkTag (tag) { return function (x) { return x._tag === tag; }; };
+    function nth (n) { return function (x) { return x[n]; }; }
 
     // lexer.
-    var lex_isIdentifierStart = function (x) {
+    function lex_isIdentifierStart (x) {
         // TODO: fix this after figuring out how to implement UAX #31
         return (
             '_'.includes(x)
             || ('a' <= x && x <= 'z') || ('A' <= x && x <= 'Z')
         );
     }
-    var lex_isIdentifierContinue = function (x) {
+    function lex_isIdentifierContinue (x) {
         // TODO: fix this after figuring out how to implement UAX #31
         return (
             '_'.includes(x)
@@ -20,7 +20,7 @@ var DBN = (function(){
             || ('0' <= x && x <= '9')
         );
     }
-    var lex_skipWhite = function (s, i, oldLine, oldCol) {
+    function lex_skipWhite (s, i, oldLine, oldCol) {
         var line = oldLine, col = oldCol;
         var res = [];
         var startI = i;
@@ -48,6 +48,7 @@ var DBN = (function(){
             }
             
         }
+        if (startI !== i) { res.push(Token(TOKEN.WHITESPC, s.substring(startI, i), startLine, startCol)); }
         return [i, line, col, res];
     }
     var TOKEN = {
@@ -70,13 +71,13 @@ var DBN = (function(){
         WHITESPC: 17,
         NL: 18
     }
-    var Token = function (type, str, line, col) { return [type, str, line, col]; }
+    function Token (type, str, line, col) { return [type, str, line, col]; }
     var getTokenType = nth(0);
     var getTokenStr = nth(1);
     var getTokenLine = nth(2);
     var getTokenCol = nth(3);
 
-    var lex = function (s) {
+    function lex (s) {
         var res = [];
         var i = 0;
         var line = 1, col = 1;
@@ -88,16 +89,16 @@ var DBN = (function(){
         while (s[i]) {
             switch (s[i]) {
                 case '<': { res.push(Token(TOKEN.LANGLE, s.substring(i, i+1), line, col)); i++; col++; break; }
-                case '>': { res.push(Token(TOKEN.LANGLE, s.substring(i, i+1), line, col)); i++; col++; break; }
-                case '[': { res.push(Token(TOKEN.LANGLE, s.substring(i, i+1), line, col)); i++; col++; break; }
-                case ']': { res.push(Token(TOKEN.LANGLE, s.substring(i, i+1), line, col)); i++; col++; break; }
-                case '(': { res.push(Token(TOKEN.LANGLE, s.substring(i, i+1), line, col)); i++; col++; break; }
-                case ')': { res.push(Token(TOKEN.LANGLE, s.substring(i, i+1), line, col)); i++; col++; break; }
-                case '{': { res.push(Token(TOKEN.LANGLE, s.substring(i, i+1), line, col)); i++; col++; break; }
-                case '}': { res.push(Token(TOKEN.LANGLE, s.substring(i, i+1), line, col)); i++; col++; break; }
-                case '+': { res.push(Token(TOKEN.LANGLE, s.substring(i, i+1), line, col)); i++; col++; break; }
-                case '-': { res.push(Token(TOKEN.LANGLE, s.substring(i, i+1), line, col)); i++; col++; break; }
-                case '*': { res.push(Token(TOKEN.LANGLE, s.substring(i, i+1), line, col)); i++; col++; break; }
+                case '>': { res.push(Token(TOKEN.RANGLE, s.substring(i, i+1), line, col)); i++; col++; break; }
+                case '[': { res.push(Token(TOKEN.LSQB, s.substring(i, i+1), line, col)); i++; col++; break; }
+                case ']': { res.push(Token(TOKEN.RSQB, s.substring(i, i+1), line, col)); i++; col++; break; }
+                case '(': { res.push(Token(TOKEN.LPAREN, s.substring(i, i+1), line, col)); i++; col++; break; }
+                case ')': { res.push(Token(TOKEN.RPAREN, s.substring(i, i+1), line, col)); i++; col++; break; }
+                case '{': { res.push(Token(TOKEN.LBRACE, s.substring(i, i+1), line, col)); i++; col++; break; }
+                case '}': { res.push(Token(TOKEN.RBRACE, s.substring(i, i+1), line, col)); i++; col++; break; }
+                case '+': { res.push(Token(TOKEN.PLUS, s.substring(i, i+1), line, col)); i++; col++; break; }
+                case '-': { res.push(Token(TOKEN.MINUS, s.substring(i, i+1), line, col)); i++; col++; break; }
+                case '*': { res.push(Token(TOKEN.MULT, s.substring(i, i+1), line, col)); i++; col++; break; }
                 case '/': {
                     if (s[i+1] && s[i+1] === '/') {
                         var j = i+1;
@@ -106,11 +107,11 @@ var DBN = (function(){
                         col += j - i;
                         i = j;
                     } else {
-                        res.push(Token(TOKEN.LANGLE, s.substring(i, i+1), line, col)); i++; col++;
+                        res.push(Token(TOKEN.DIV, s.substring(i, i+1), line, col)); i++; col++;
                     }
                     break;
                 }
-                case '%': { res.push(Token(TOKEN.LANGLE, s.substring(i, i+1), line, col)); col++; break; }
+                case '%': { res.push(Token(TOKEN.MOD, s.substring(i, i+1), line, col)); col++; break; }
                 default: {
                     if ('0' <= s[i] && s[i] <= '9') {
                         var j = i+1;
@@ -150,7 +151,7 @@ var DBN = (function(){
     }
     // default as english.
     var CURRENT_LANGUAGE = 'english';
-    var setLanguage = function (newLanguage) { CURRENT_LANGUAGE = newLanguage; }
+    function setLanguage (newLanguage) { CURRENT_LANGUAGE = newLanguage; }
 
     // parser.
     var TAG = {
@@ -163,11 +164,11 @@ var DBN = (function(){
         COMMAND_BODY: 7
     };
 
-    var withPos = function (line, col) { return function (ast) { ast._line = line; ast._col = col; return ast; } };
-    var withPosFromToken = function (t) { return function (ast) { ast._line = getTokenLine(t); ast._col = getTokenCol(t); return ast; } };
-    var withPosFromAST = function (x) { return function (ast) { ast._line = x._line; ast._col = x._col; return ast; } };
-    var getLine = function (ast) { return ast._line; }
-    var getCol = function (ast) { return ast._col; }
+    function withPos (line, col) { return function (ast) { ast._line = line; ast._col = col; return ast; } };
+    function withPosFromToken (t) { return function (ast) { ast._line = getTokenLine(t); ast._col = getTokenCol(t); return ast; } };
+    function withPosFromAST (x) { return function (ast) { ast._line = x._line; ast._col = x._col; return ast; } };
+    function getLine (ast) { return ast._line; }
+    function getCol (ast) { return ast._col; }
 
     var Integer = withTag(TAG.INTEGER);
     var isInteger = checkTag(TAG.INTEGER);
@@ -191,25 +192,37 @@ var DBN = (function(){
     var Op = withTag(TAG.OP);
     var isOp = checkTag(TAG.OP);
     var getOpOp = nth(0);
-    var getOpArg = function (x, n) { return x[n + 1]; };
+    function getOpArg (x, n) { return x[n + 1]; };
 
     var Command = withTag(TAG.COMMAND);
     var isCommand = checkTag(TAG.COMMAND);
     var getCommandType = nth(0);
-    var getCommandBody = function (x) {
+    function getCommandBody (x) {
         return isCommandBody(x[x.length - 1])? x[x.length - 1] : undefined;
     }
-    var getCommandArgs = function (x) {
+    function getCommandArgs (x) {
         return x.slice(1, isCommandBody(x[x.length - 1])? x.length - 1 : x.length);
     }
     
     var CommandBody = withTag(TAG.COMMAND_BODY);
     var isCommandBody = checkTag(TAG.COMMAND_BODY);
 
+    function parse_skipWhite (tl, i) {
+        while (tl[i] && [TOKEN.COMMENT, TOKEN.WHITESPC].includes(getTokenType(tl[i]))) {
+            i++;
+        }
+        return i;
+    }
+    function parse_skipAllWhite (tl, i) {
+        while (tl[i] && [TOKEN.COMMENT, TOKEN.WHITESPC, TOKEN.NL].includes(getTokenType(tl[i]))) {
+            i++;
+        }
+        return i;
+    }
 
     // Parser : (tokenList: Token[], i: number) => [i, result]|undefined
-    var parseExpr = function (tl, i) {
-        var i = 0;
+    function parseExpr (tl, i) {
+        var startI = i;
         if (!tl[i]) { throw new Error('INTEGER/IDENTIFIER/LANGLE/LSQB/LPAREN expected but nothing found'); }
         switch (getTokenType(tl[i])) {
             case TOKEN.INTEGER: {
@@ -219,23 +232,24 @@ var DBN = (function(){
                 return [i+1, withPosFromToken(tl[i])(Identifier(getTokenStr(tl[i])))];
             }
             case TOKEN.LANGLE: {
-                var restRes = parseArrayElementRest(tl, i+1);
+                var restRes = parseArrayElementRest(tl, parse_skipWhite(tl, i+1));
                 if (!restRes) { throw new Error(); }
                 return [restRes[0], withPosFromToken(tl[i])(restRes[1])];
             }
             case TOKEN.LSQB: {
-                var restRes = parsePositionElementRest(tl, i+1);
+                var restRes = parsePositionElementRest(tl, parse_skipWhite(tl, i+1));
                 if (!restRes) { throw new Error(); }
                 return [restRes[0], withPosFromToken(tl[i])(restRes[1])];
             }
             case TOKEN.LPAREN: {
-                var restRes = parseComplexExpr(tl, i+1);
+                var restRes = parseComplexExpr(tl, parse_skipWhite(tl, i+1));
                 if (!restRes) { throw new Error(); }
                 i = restRes[0];
                 if (!tl[i]) { throw new Error('RPAREN expected but nothing found'); }
+                i = parse_skipWhite(tl, i);
                 if (getTokenType(tl[i]) !== TOKEN.RPAREN) { throw new Error('RPAREN expected but other stuff found'); }
                 i++;
-                return [i, withPosFromToken(tl[i])(restRes[1])];
+                return [i, withPosFromToken(tl[startI])(restRes[1])];
             }
             default: {
                 throw new Error('INTEGER/IDENTIFIER/LANGLE/LSQB/LPAREN expected but other stuff found.');
@@ -243,54 +257,61 @@ var DBN = (function(){
         }
     };
     // Caller should move `i` AFTER the starting LANGLE token.
-    var parseArrayElementRest = function (tl, i) {
+    function parseArrayElementRest (tl, i) {
         if (!tl[i]) { throw new Error('IDENTIFIER expected but nothing found'); }
         if (getTokenType(tl[i]) !== TOKEN.IDENTIFIER) { throw new Error('IDENTIFIER expected but other stuff found'); }
         var id = withPosFromToken(tl[i])(Identifier(getTokenStr(tl[i])));
         i++;
-        var exprParseRes = parseExpr(tl, i+1);
+        i = parse_skipWhite(tl, i);
+        var exprParseRes = parseExpr(tl, i);
         if (!exprParseRes) { throw new Error('Expr expected but other stuff found'); }
         i = exprParseRes[0];
         if (!tl[i]) { throw new Error('RANGLE expected but nothing found'); }
-        if (getTokenType(tl[i]) !== TOKEN.RANGLE) { throw new Error('LANGLE expected but nothing found'); }
+        if (getTokenType(tl[i]) !== TOKEN.RANGLE) { throw new Error('RANGLE expected but nothing found'); }
         i++;
         return [i, ArrayRef(id, exprParseRes[1])];
     };
     // Caller should move `i` AFTER the starting LSQB token.
-    var parsePositionElementRest = function (tl, i) {
+    function parsePositionElementRest (tl, i) {
         if (!tl[i]) { throw new Error(`Expr expected but nothing found`); }
         var expr1 = parseExpr(tl, i);
         if (!expr1) { throw new Error('Expr expected but other stuff found'); }
         i = expr1[0];
+        i = parse_skipWhite(tl, i);
         var expr2 = parseExpr(tl, i);
         if (!expr2) { throw new Error('Expr expected but other stuff found'); }
         i = expr2[0];
+        i = parse_skipWhite(tl, i);
+        var resArg = [expr1[1], expr2[1]];
         if (!tl[i]) { throw new Error('RSQB or IDENTIFIER expected but nothing found'); }
-        var color = undefined;
         if (getTokenType(tl[i]) === TOKEN.IDENTIFIER) {
-            color = withPosFromToken([tl[i]])(Identifier(getTokenStr(tl[i])));
+            resArg.push(withPosFromToken([tl[i]])(Identifier(getTokenStr(tl[i]))));
+            i++;
+            i = parse_skipWhite(tl, i);
         }
+        if (!tl[i]) { throw new Error('RSQB expected but nothing found'); }
+        if (getTokenType(tl[i]) !== TOKEN.RSQB) { throw new Error('RSQB expected but other stuff found'); }
         i++;
-        return [i, color? Position(expr1, expr2) : Position(expr1, expr2, color)];        
+        return [i, Position.apply(undefined, resArg)];
     }
 
-    var _op = function (subExprName, direction, opList, subExprParser) {
+    function _op (subExprName, direction, allowedOpList, subExprParser) {
         function res (tl, i) {
-            var i = 0;
             var factorList = [];
             var opList = [];
             var isContinuing = false;
+            i = parse_skipWhite(tl, i);
             while (tl[i]) {
                 var x = subExprParser(tl, i);
                 if (!x && isContinuing) { throw new Error(subExprName + ' expected but other stuff found'); }
                 factorList.push(x[1]);
                 i = x[0];
+                i = parse_skipWhite(tl, i);
                 if (!tl[i]) { break; }
-                if ((getTokenType(tl[i]) !== TOKEN.IDENTIFIER) || (!opList.includes(getTokenString(tl[i])))) {
-                    throw new Error('One of [' + opList + '] expected but other stuff found');
-                }
+                if (!allowedOpList.includes(getTokenType(tl[i]))) { break; }
                 opList.push(withPosFromToken(tl[i])(Identifier(tl[i])));
                 i++;
+                i = parse_skipWhite(tl, i);
                 isContinuing = true;
             }
             if (factorList.length <= 0) { return [i, undefined]; }
@@ -310,21 +331,30 @@ var DBN = (function(){
         }
         return res;
     };
-    var parseComplexExpr = _op('Factor', 1, ['+', '-'], parseFactor);
-    var parseFactor = _op('AtomicExpr', 1, ['*', '/', '%'], parseAtomicExpr);
+    var parseFactor = _op('AtomicExpr', 1, [TOKEN.MULT, TOKEN.DIV, TOKEN.MOD], parseExpr);
+    var parseComplexExpr = _op('Factor', 1, [TOKEN.PLUS, TOKEN.MINUS], parseFactor);
 
-    var parseSimpleCommand = function (tl, i) {
+    function parseSimpleCommand (tl, i) {
         var res = [];
-        if (!tl[i]) { throw new Error('Expr expected but nothing found'); }
+        i = parse_skipWhite(tl, i);
+        if (!tl[i]) { throw new Error('IDENTIFIER expected but nothing found'); }
+        if (getTokenType(tl[i]) !== TOKEN.IDENTIFIER) { throw new Error('IDENTIFIER expected but other stuff found'); }
+        res.push(withPosFromToken(tl[i])(Identifier(getTokenStr(tl[i]))));
+        i++;
+        i = parse_skipWhite(tl, i);
         while (tl[i]) {
             var r = parseExpr(tl, i);
             if (!r) { break; }
             res.push(r[1]);
             i = r[0];
+            i = parse_skipWhite(tl, i);
+            if (!tl[i]) { break; }
+            if (getTokenType(tl[i]) === TOKEN.NL) { break; }
         }
+        console.log(res);
         return [i, withPosFromAST(res[0])(Command.apply(undefined, res))];
     }
-    var parseCommand = function (tl, i) {
+    function parseCommand (tl, i) {
         var simpleCommand = parseSimpleCommand(tl, i);
         if (!simpleCommand) { throw new Error('SimpleCommand expected but nothing or other stuff found'); }
         i = simpleCommand[0]
@@ -334,7 +364,7 @@ var DBN = (function(){
 
         
     }
-    var parseProgram = function (tl) {
+    function parseProgram (tl) {
         var res = [];
         var i = 0;
         if (!tl[i]) { throw new Error('Command expected but nothing found'); }
@@ -343,12 +373,13 @@ var DBN = (function(){
             if (!r) { break; }
             res.push(r[1]);
             i = r[0];
+            i = parse_skipWhite(tl, i);
         }
         return res;
     }
     
 
-    var parse = function (s) {
+    function parse (s) {
 
     }
     
@@ -361,11 +392,17 @@ var DBN = (function(){
 
     // canvas discovering.
     
-    return {
-        lex: lex,
-        run: function () {
+    // return {
+        // lex: lex,
+        // parseSimpleCommand,
+        // parseExpr,
+        // 
+        // run: function () {
+// 
+        // }
+    // };
 
-        }
-    };
-
-})();
+// })();
+var test1 = lex('<array 3>');
+var test2 = lex('[30 40]');
+var test3 = lex('[30 40 blah]');
