@@ -138,3 +138,5 @@ Set the color of foreground.
 
 </details>
 
+### Aliases
+

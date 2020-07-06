@@ -203,6 +203,9 @@
     function getCommandArgs (x) {
         return x.slice(1, isCommandBody(x[x.length - 1])? x.length - 1 : x.length);
     }
+    function getCommandNthArg (n, x) {
+        return x[n+1];
+    }
     
     var CommandBody = withTag(TAG.COMMAND_BODY);
     var isCommandBody = checkTag(TAG.COMMAND_BODY);
@@ -392,18 +395,133 @@
         }
         return res;
     }
-    
 
     function parse (s) {
-
+        return parseProgram(lex(s));
     }
-    
 
     // canvas interface.
 
-
+    
+    // alias handling.
+    var ALIASES = {
+    };
+    function afterAlias (x) {
+        x = x.toLowerCase();
+        return ALIASES[x]? ALIASES[x] : x;
+    }
+    function registerAlias (alias, name) {
+        ALIASES[alias.trim()] = name;
+    }
+    
     // vm.
+    var MACHINE_STATE = {
+        canvas: undefined,
+        var: {},
+        isTurtleMode: false,
+        mouse: { 1: undefined, 2: undefined, 3: undefined, x: undefined, y: undefined },
+        keyboard: undefined,
+        turtle: {
+            origin: {x: -1, y: -1},
+            facing: 0,
+            position: {x: -1, y: -1}
+        }
+    }
+    /**
+     * @param {MouseEvent} e 
+     */
+    function mouseEventListener (e) {
+        MACHINE_STATE.mouse.x = e.clientX;
+        MACHINE_STATE.mouse.y = e.clientY;
+        // MACHINE_STATE.mouse[1] = e.
+    }
+    function initMachine () {
+        // TODO: add event listeners here.
+    }
+    function machineEval (expr) {
 
+    }
+    var step = function (command) {
+        if (!MACHINE_STATE.canvas) { throw new Error('Canvas not initialized'); }
+        if (isTurtleMode) {
+            switch (afterAlias(getCommandType(command))) {
+                case 'forward': {
+                    break;
+                }
+                case 'backward': {
+                    break;
+                }
+                case 'penup': {
+                    break;
+                }
+                case 'pendown': {
+                    break;
+                }
+                case 'left': {
+                    break;
+                }
+                case 'right': {
+                    break;
+                }
+            }
+        } else {
+            switch (afterAlias(getCommandType(command))) {
+                case 'set': {
+                    break;
+                }
+                case 'point': {
+                    break;
+                }
+                case 'line': {
+                    break;
+                }
+                case 'same?': {
+                    break;
+                }
+                case 'notsame?': {
+                    break;
+                }
+                case 'smaller?': {
+                    break;
+                }
+                case 'notsmaller?': {
+                    break;
+                }
+                case 'repeat': {
+                    break;
+                }
+                case 'forever': {
+                    break;
+                }
+                case 'turtle': {
+                    break;
+                }
+                case 'bigger?': {
+                    break;
+                }
+                case 'notbigger?': {
+                    break;
+                }
+                case 'size': {
+                    break;
+                }
+                case 'if': {
+                    break;
+                }
+                case 'while': {
+                    break;
+                }
+                case 'alias': {
+                    var arg1 = getCommandNthArg(0, command);
+                    var arg2 = getCommandNthArg(1, command);
+                    if (!isIdentifier(arg1)) { throw new Error(); }
+                    if (!isIdentifier(arg2)) { throw new Error(); }
+                    registerAlias(getIdentifierValue(arg1), getIdentifierValue(arg2));
+                    break;
+                }
+            }
+        }
+    }
 
     // canvas discovering.
     
