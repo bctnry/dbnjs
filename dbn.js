@@ -401,6 +401,17 @@
     }
 
     // canvas interface.
+    /**
+     * @param {HTMLCanvasElement} canvas 
+     */
+    function CanvasInterface(canvas) {
+        if (!canvas.__dbnjs) { canvas.__dbnjs = {}; }
+        canvas.__dbnjs.drawingContext = canvas.getContext('2d');
+        function getSize() {
+            return {width: canvas.width, height: canvas.height};
+        }
+
+    }
 
     
     // alias handling.
@@ -415,29 +426,6 @@
     }
     
     // vm.
-    var MACHINE_STATE = {
-        canvas: undefined,
-        var: {},
-        isTurtleMode: false,
-        mouse: { 1: undefined, 2: undefined, 3: undefined, x: undefined, y: undefined },
-        keyboard: undefined,
-        turtle: {
-            origin: {x: -1, y: -1},
-            facing: 0,
-            position: {x: -1, y: -1}
-        }
-    }
-    /**
-     * @param {MouseEvent} e 
-     */
-    function mouseEventListener (e) {
-        MACHINE_STATE.mouse.x = e.clientX;
-        MACHINE_STATE.mouse.y = e.clientY;
-        // MACHINE_STATE.mouse[1] = e.
-    }
-    function initMachine () {
-        // TODO: add event listeners here.
-    }
     function machineEval (expr) {
 
     }
@@ -522,6 +510,41 @@
             }
         }
     }
+    /**
+     * @param {HTMLCanvasElement} canvas 
+     */
+    function mkvm(canvas) {
+        var MACHINE_STATE = {
+            canvas: undefined,
+            var: {},
+            isTurtleMode: false,
+            mouse: { 1: undefined, 2: undefined, 3: undefined, x: undefined, y: undefined },
+            keyboard: undefined,
+            turtle: {
+                origin: {x: -1, y: -1},
+                facing: 0,
+                position: {x: -1, y: -1}
+            }
+        };
+        if (!canvas.__dbnjs) { canvas.__dbnjs = {}; }
+        canvas.__dbnjs.MACHINE_STATE = MACHINE_STATE;
+        /**
+         * @param {MouseEvent} e 
+         */
+        function mouseEventListener (e) {
+            MACHINE_STATE.mouse.x = e.clientX;
+            MACHINE_STATE.mouse.y = e.clientY;
+            MACHINE_STATE.mouse[1] = !!(e.buttons&1);
+            MACHINE_STATE.mouse[2] = !!(e.buttons&2);
+            MACHINE_STATE.mouse[3] = !!(e.buttons&4);
+        }
+        canvas.addEventListener('mousemove', mouseEventListener);
+        canvas.addEventListener('mouseup', mouseEventListener);
+        canvas.addEventListener('mousedown', mouseEventListener);
+        canvas.addEventListener('mouseenter', mouseEventListener);
+        canvas.addEventListener('mouseleave', mouseEventListener);
+    }
+
 
     // canvas discovering.
     

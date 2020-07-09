@@ -34,18 +34,23 @@ Supported languages are listed below:
 + `"chinese-simp"`: Simplified Chinese
 + `"chinese-trad"`: Traditional Chinese
 
-## Core features
+## Command Reference
 
 ### Canvas & Drawing
 
+<!-- paper  -->
 <details><summary><code>paper</code> - Set the color of background.</summary>
+
 Aliases: <code>papel</code><sup>spanish</sup> <code>papier</code><sup>french</sup> <code>かみ</code><sup>japanese</sup> <code>纸</code><sup>chinese-simp</sup> 
+
+<!-- paper grayscale -->
 <details><summary><code>paper</code> <i>gray-scale</i></summary>
 Set the color of background.
 
 *gray-scale* is an integer between 0 to 100, with 0 representing **white** and 100 representing **black**.
 </details>
 
+<!-- paper color -->
 <details><summary><code>paper</code> <i>red</i> <i>green</i> <i>blue</i></summary>
 Set the color of background.
 
@@ -62,11 +67,13 @@ Set the color of foreground.
 
 </details>
 
-<details><summary>`point`</summary>
+
+<!-- point  -->
+<details><summary><code>point</code> - Draw a point at specific position.</summary>
 
 </details>
 
-<details><summary>`line`</summary>
+<details><summary><code>line</code> - Draw a line at specific position.</summary>
 
 </details>
 
