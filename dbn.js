@@ -404,13 +404,28 @@
     /**
      * @param {HTMLCanvasElement} canvas 
      */
-    function CanvasInterface(canvas) {
+    function injectCanvasInterface(canvas) {
         if (!canvas.__dbnjs) { canvas.__dbnjs = {}; }
-        canvas.__dbnjs.drawingContext = canvas.getContext('2d');
+        var context = canvas.__dbnjs.drawingContext = canvas.getContext('2d');
         function getSize() {
             return {width: canvas.width, height: canvas.height};
         }
+        function getColor(x, y) {
+            
+        }
+        function drawPoint(x, y, color) {
 
+        }
+        function drawLine(x1, y1, x2, y2, color) {
+
+        }
+
+        canvas.__dbnjs.interface = {
+            getSize: getSize,
+            getColor: getColor,
+            drawPoint: drawPoint,
+            drawLine: drawLine,
+        }
     }
 
     
@@ -426,8 +441,28 @@
     }
     
     // vm.
-    function machineEval (expr) {
-
+    function machineEval (machineState, expr) {
+        if (isIdentifier(expr)) { return MACHINE_STATE.var[getIdentifierValue(expr)]; }
+        else if (isOp(expr)) {
+            switch (getOpOp(expr)) {
+                case '+': { break; }
+                case '-': { break; }
+                case '*': { break; }
+                case '/': { break; }
+                case '%': { break; }
+            }
+        }
+        else if (isPosition(expr)) { }
+        else if (isArrayRef(expr)) {
+            switch (getArrayRefArray(expr)) {
+                case 'mouse': {
+                    break;
+                }
+                case 'keyboard': {
+                    break;
+                }
+            }
+        }
     }
     var step = function (command) {
         if (!MACHINE_STATE.canvas) { throw new Error('Canvas not initialized'); }
